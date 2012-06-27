@@ -85,7 +85,6 @@ else:
   if output:
     exit(5)
 
-
 ## Delete temporary files
 
 remove_ext=['.tex','.dvi','.ps','.log','.aux']
