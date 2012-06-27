@@ -57,7 +57,6 @@ for n,l in enumerate(buf):
 if args.sans:
   buf.insert(pos,'\\sffamily\n')
 
-
 ## create temporary file
 
 rand=random.randrange(100,1000)
