@@ -9,11 +9,13 @@ import os
 import argparse
 import random
 
+# parse arguments
+
 parser = argparse.ArgumentParser(description='Epslatex to eps')
 parser.add_argument('file', metavar='FILE',
                    help='epsLaTeX TeX file')
-parser.add_argument('-r','--remove',action='store_true',
-                   help='remove building files')
+parser.add_argument('-r','--remove',action='store_false',
+                   help='do not remove building files')
 parser.add_argument('-f','--force',action='store_true',
                    help='force overwriting')
 parser.add_argument('-s','--sans',action='store_true',
@@ -23,6 +25,8 @@ parser.add_argument('-p','--pdf',action='store_true',
 parser.add_argument('-o',metavar='OUTFILE',
                    help='output file')
 args = parser.parse_args()
+
+# arguments control
 
 file=os.path.realpath(args.file)
 if not os.path.isfile(file):
@@ -40,7 +44,6 @@ if not args.force:
     choice = raw_input().lower()
     if choice=='n':
       exit(6)
-
 
 with open(file,'r') as fl:
   buf=fl.readlines()
