@@ -70,18 +70,18 @@ with open(roottmp+'.tex','w') as fl:
 
 ## Compile latex File
 
-output=sp.call(['latex',roottmp+'.tex'])
+output=sp.call(['latex',roottmp+'.tex'],stderr=sp.STDOUT,stdout=sp.PIPE)
 if output:
   exit(3)
-output=sp.call(['dvips',roottmp+'.dvi'])
+output=sp.call(['dvips',roottmp+'.dvi'],stderr=sp.STDOUT,stdout=sp.PIPE)
 if output:
   exit(4)
 if args.pdf:
-  output=sp.call(['ps2pdf','-f',roottmp+'.ps'])
+  output=sp.call(['ps2pdf','-f',roottmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
   if output:
     exit(5)
 else:
-  output=sp.call(['ps2eps','-f',roottmp+'.ps'])
+  output=sp.call(['ps2eps','-f',roottmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
   if output:
     exit(5)
 
