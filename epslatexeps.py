@@ -40,9 +40,9 @@ if ext!='.tex':
 
 if not args.force:
   if os.path.isfile(root+'.eps'):
-    print(root+'.eps','Already exist; overwrite?[y/n]')
+    print(root+'.eps Already exist; overwrite?[y/n]')
     choice = raw_input().lower()
-    if choice=='n':
+    if not choice=='y':
       exit(6)
 
 with open(file,'r') as fl:
