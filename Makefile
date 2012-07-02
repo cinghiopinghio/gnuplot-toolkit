@@ -1,9 +1,10 @@
-shfile=epslates2eps
-pyfile=epslatexeps
+SHFILE=epslatex2eps
+PYFILE=epslatexeps
+PATHDIR=~/.local/bin
 
 install:
-	ln -sf ${CURDIR}/epslatex2eps.sh ~/bin/epslatex2eps
-	ln -sf ${CURDIR}/epslatexeps.py ~/bin/epslatexeps
+	ln -sf ${CURDIR}/${SHFILE}.sh ${PATHDIR}/${SHFILE}
+	ln -sf ${CURDIR}/${PYFILE}.py ${PATHDIR}/${PYFILE}
 uninstall:
-	rm -f ~/bin/epslatex2eps
-	rm -f ~/bin/epslatexeps
+	rm -f ${PATHDIR}/${SHFILE}
+	rm -f ${PATHDIR}/${PYFILE}
