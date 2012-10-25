@@ -1,15 +1,15 @@
 from __future__ import print_function
 
-colors=['#000000', 
-        '#ff181f', 
-        '#2e8b57', 
-        '#0060ad', 
-        '#ff8c00', 
-        '#9400d3', 
-        '#b22222', 
-        '#556b2f', 
-        '#dc143c', 
-        '#6495ed']
+colors=['\'#000000\'', 
+        '\'#ff181f\'', 
+        '\'#2e8b57\'', 
+        '\'#0060ad\'', 
+        '\'#ff8c00\'', 
+        '\'#9400d3\'', 
+        '\'#b22222\'', 
+        '\'#556b2f\'', 
+        '\'#dc143c\'', 
+        '\'#6495ed\'']
 
 styles=range(10)
 
@@ -41,7 +41,7 @@ histo='''
 # function to plot histograms:
 # usage:
 # p "filename" u (BIN($1,width)):(1.0) smooth freq with boxes
-BIN(X,WIDTH)=WIDTH*floor(X/WIDTH)+WIDTH/2')
+BIN(X,WIDTH)=WIDTH*floor(X/WIDTH)+WIDTH/2
 '''
 
 print(border)
@@ -52,8 +52,11 @@ print(histo)
 
 for nc,c in enumerate(colors):
   for s in styles:
-    print('set style line',str(nc*len(styles)+s),'lc rgb',c,'pt' ,s,\
-          'ps 2 lt',s,'lw 2')
+    tag=nc*len(styles)+s
+    if tag==0:
+      tag=100
+    print('set style line',str(tag),'lc rgb',c,'pt' ,s+1,\
+          'ps 2 lt',s+1,'lw 2')
 
 
 
