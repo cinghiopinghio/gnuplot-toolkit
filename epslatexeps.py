@@ -39,11 +39,18 @@ if ext!='.tex':
   exit(2)
 
 if not args.force:
-  if os.path.isfile(root+'.eps'):
-    print(root+'.eps Already exist; overwrite?[y/n]')
-    choice = raw_input().lower()
-    if not choice=='y':
-      exit(6)
+  if args.pdf:
+    if os.path.isfile(root+'.pdf'):
+      print(root+'.pdf Already exist; overwrite?[y/n]')
+      choice = raw_input().lower()
+      if not choice=='y':
+        exit(6)
+  else:
+    if os.path.isfile(root+'.eps'):
+      print(root+'.eps Already exist; overwrite?[y/n]')
+      choice = raw_input().lower()
+      if not choice=='y':
+        exit(6)
 
 with open(file,'r') as fl:
   buf=fl.readlines()
@@ -73,7 +80,7 @@ with open(roottmp+'.tex','w') as fl:
 output=sp.call(['latex',roottmp+'.tex'],stderr=sp.STDOUT,stdout=sp.PIPE)
 if output:
   exit(3)
-output=sp.call(['dvips',roottmp+'.dvi'],stderr=sp.STDOUT,stdout=sp.PIPE)
+output=sp.call(['dvips','-j0 -G0',roottmp+'.dvi'],stderr=sp.STDOUT,stdout=sp.PIPE)
 if output:
   exit(4)
 if args.pdf:
