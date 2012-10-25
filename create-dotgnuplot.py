@@ -17,15 +17,15 @@ print ('set terminal wxt dash')
 
 border='''
 #set borders
-set style line 100 lc rgb \'#303030\' lt 1 lw 1.5
-set border 3 back ls 100
+set style line 101 lc rgb \'#303030\' lt 1 lw 1.5
+set border 3 back ls 101
 set tics nomirror out scale 0.75
 '''
 
 grid='''
 #set grid
-set style line 101 lc rgb \'#808080\' lt 0 lw 1
-set grid back ls 101
+set style line 102 lc rgb \'#808080\' lt 0 lw 1
+set grid back ls 102
 '''
 
 
