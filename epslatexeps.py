@@ -74,14 +74,14 @@ def main(args=None):
 
     remove_tmp(roottmp)
     exit(3)
-  output=sp.call(['dvips','-j0 -G0',roottmp+'.dvi'],stderr=sp.STDOUT,stdout=sp.PIPE)
+  output=sp.call(['dvips','-j0 -G0',roottmp+'.dvi','-o',roottmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
   if output:
     print ('Error compiling *.dvi:')
     print ('Take a look at you file')
     remove_tmp(roottmp)
     exit(4)
   if args.pdf:
-    output=sp.call(['ps2pdf','-f',roottmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
+    output=sp.call(['ps2pdf','-f',roottmp+'.ps',roottmp+'.pdf'],stderr=sp.STDOUT,stdout=sp.PIPE)
     if output:
       print ('Error compiling *.ps:')
       print ('Take a look at you file')
@@ -98,25 +98,24 @@ def main(args=None):
 
   if args.o==None:
     if args.pdf:
-      os.rename(roottmp+'.pdf',root+'.pdf')
+      shutil.move(roottmp+'.pdf',root+'.pdf')
     else:
-      os.rename(roottmp+'.eps',root+'.eps')
+      shutil.move(roottmp+'.eps',root+'.eps')
   else:
     if args.pdf:
-      os.rename(roottmp+'.pdf',args.o)
+      shutil.move(roottmp+'.pdf',args.o)
     else:
-      os.rename(roottmp+'.eps',args.o)
+      shutil.move(roottmp+'.eps',args.o)
 
+  if args.remove:
+    remove_tmp(roottmp)
 
 def remove_tmp(roottmp):
   ## Delete temporary files
-
   remove_ext=['.tex','.dvi','.ps','.log','.aux']
-
-  if args.remove:
-    for e in remove_ext:
-      if os.path.isfile(roottmp+e):
-        os.remove(roottmp+e)
+  for e in remove_ext:
+    if os.path.isfile(roottmp+e):
+      os.remove(roottmp+e)
 
 
 if __name__=='__main__':
