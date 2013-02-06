@@ -31,8 +31,6 @@ def main(args=None):
 
   buf,pos = file_to_buffer(file)
   if pos == None:
-    'The file is not standalone'
-    'not implemented yet'
     print('The file is not standalone')
     box = get_bounding_box(file)
     buf = modify_buffer(buf,box)
