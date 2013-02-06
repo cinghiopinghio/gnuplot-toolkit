@@ -1,4 +1,5 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 ########################################
 # Transform epslatex files from gnuplot
 # to eps files (with latex text included)
@@ -23,6 +24,15 @@ def check_file(filename):
     exit(2)
   return root,ext
 
+def file_to_buffer(filename):
+  with open(file,'r') as fl:
+    buffer=fl.readlines()
+  for n,l in enumerate(buffer):
+    if l=='\\begin{document}\n':
+      pos=n+1
+      break
+  return buffer,pos
+
 def main(args=None):
 
 # arguments control
@@ -44,12 +54,7 @@ def main(args=None):
         if not choice=='y':
           exit(6)
 
-  with open(file,'r') as fl:
-    buf=fl.readlines()
-  for n,l in enumerate(buf):
-    if l=='\\begin{document}\n':
-      pos=n+1
-      break
+  buf,pos = file_to_buffer(file)
 
 ## Use sans serif fonts
 
