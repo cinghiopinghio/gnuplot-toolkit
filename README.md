@@ -17,3 +17,20 @@ Latex-ing file.tex you obtain the wanted plot.
 
 This ToolKit let you _transform_ your tex file to eps (pdf) without the huge
 amount of log/data file printed out by latex.
+
+## Usage
+
+usage: `epslatexeps [-h] [-f] [-s] [-p] [-o OUTFILE] FILE`
+
+Epslatex to eps
+
+positional arguments:
+  `FILE`         epsLaTeX TeX file
+
+optional arguments:
+  `-h, --help`   show this help message and exit
+  `-f, --force`  force overwriting
+  `-s, --sans`   use sans serif fonts for text
+  `-p, --pdf`    output in pdf
+  `-o OUTFILE`   output file
+
