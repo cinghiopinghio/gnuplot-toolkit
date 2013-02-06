@@ -25,12 +25,12 @@ usage: `epslatexeps [-h] [-f] [-s] [-p] [-o OUTFILE] FILE`
 Epslatex to eps
 
 positional arguments:
-  `FILE`         epsLaTeX TeX file
+- `FILE`         epsLaTeX TeX file
 
 optional arguments:
-  `-h, --help`   show this help message and exit
-  `-f, --force`  force overwriting
-  `-s, --sans`   use sans serif fonts for text
-  `-p, --pdf`    output in pdf
-  `-o OUTFILE`   output file
+-  `-h, --help`   show this help message and exit
+-  `-f, --force`  force overwriting
+-  `-s, --sans`   use sans serif fonts for text
+-  `-p, --pdf`    output in pdf
+-  `-o OUTFILE`   output file
 
