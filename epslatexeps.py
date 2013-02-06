@@ -78,52 +78,45 @@ def main(args=None):
 
     shutil.rmtree(rootdtmp)
     exit(3)
+## DVI to PS
   output=sp.call(['dvips','-j0 -G0',rootftmp+'.dvi','-o',rootftmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
   if output:
     print ('Error compiling *.dvi:')
     print ('Take a look at you file')
     shutil.rmtree(rootdtmp)
-    #remove_tmp(roottmp)
     exit(4)
   if args.pdf:
+## PS to PDF
     output=sp.call(['ps2pdf','-f',rootftmp+'.ps',rootftmp+'.pdf'],stderr=sp.STDOUT,stdout=sp.PIPE)
     if output:
       print ('Error compiling *.ps:')
       print ('Take a look at you file')
-      #remove_tmp(roottmp)
       shutil.rmtree(rootdtmp)
       exit(5)
   else:
+## PS to EPS
     output=sp.call(['ps2eps','-f',rootftmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
     if output:
       print ('Error compiling *.ps:')
       print ('Take a look at you file')
-      #remove_tmp(roottmp)
       shutil.rmtree(rootdtmp)
       exit(5)
 
-
-  if args.o==None:
-    if args.pdf:
-      shutil.move(rootftmp+'.pdf',root+'.pdf')
-    else:
-      shutil.move(rootftmp+'.eps',root+'.eps')
-  else:
-    if args.pdf:
-      shutil.move(rootftmp+'.pdf',args.o)
-    else:
-      shutil.move(rootftmp+'.eps',args.o)
+#temporary outfile name (pdf of eps)
+  tmpfile = rootftmp + '.pdf' if args.pdf else rootftmp + '.eps'
+#outfile name (pdf of eps)
+  outfile = root   +   '.pdf' if args.pdf else root   +   '.eps'
+#if given, use user specified outfile name
+  if args.o != None: outfile = args.o
+  shutil.move(tmpfile,outfile)
   
   shutil.rmtree(rootdtmp)
 
 if __name__=='__main__':
   # parse arguments
-
   parser = argparse.ArgumentParser(description='Epslatex to eps')
   parser.add_argument('file', metavar='FILE',
                      help='epsLaTeX TeX file')
-  parser.add_argument('-r','--remove',action='store_false',
-                     help='do not remove building files')
   parser.add_argument('-f','--force',action='store_true',
                      help='force overwriting')
   parser.add_argument('-s','--sans',action='store_true',
