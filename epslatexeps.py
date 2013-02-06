@@ -7,21 +7,28 @@ from __future__ import print_function
 import subprocess as sp
 import os,shutil
 import argparse
-import random
+import tempfile as tmp
 
-def main(args=None):
-
-  # arguments control
-
-  file=os.path.realpath(args.file)
-  if not os.path.isfile(file):
+def check_file(filename):
+  '''
+  check existence and extension of given file
+  '''
+  if not os.path.isfile(filename):
     print('ERR: no such file')
     exit(1)
 
-  root,ext=os.path.splitext(file)
+  root,ext=os.path.splitext(filename)
   if ext!='.tex':
     print('ERR: wrong file; need *.tex file')
     exit(2)
+  return root,ext
+
+def main(args=None):
+
+# arguments control
+
+  file=os.path.realpath(args.file)
+  root,ext = check_file(file)
 
   if not args.force:
     if args.pdf:
@@ -44,79 +51,70 @@ def main(args=None):
       pos=n+1
       break
 
-  ## Use sans serif fonts
+## Use sans serif fonts
 
   if args.sans:
     buf.insert(pos,'\\sffamily\n')
 
-  ## create temporary file
+## create temporary folder
 
-  rand=random.randrange(100,1000)
-  roottmp='/tmp/temporaryfilefromesplatexeps'+str(rand)
-  while os.path.isfile(roottmp+'.tex'):
-    rand=random.randrange(100,1000)
-    roottmp='/tmp/temporaryfilefromesplatexeps'+str(rand)
-  with open(roottmp+'.tex','w') as fl:
-    fl.writelines(buf)
+  rootdtmp=tmp.mkdtemp('-epslatexeps')
 
-
-  ## Compile latex File
-  CLargs=['-interaction=nonstopmode','-output-directory=/tmp/','-aux-directory=/tmp/']
-  output=sp.call(['latex']+CLargs+[roottmp+'.tex'],stderr=sp.STDOUT,stdout=sp.PIPE)
-  if output:
+## Compile latex File
+  with tmp.NamedTemporaryFile(mode='w',suffix='.tex',dir=rootdtmp) as fin:
+    fin.writelines(buf)
+    fin.flush()
+    rootftmp = fin.name[:-4]
+    CLargs=['-interaction=nonstopmode','-output-directory='+rootdtmp,'-aux-directory='+rootdtmp]
+    output=sp.call(['latex']+CLargs+[rootftmp+'.tex'],stderr=sp.STDOUT,stdout=sp.PIPE)
+  if output: 
+    ## if errors on compile time:
     print ('Error in LaTeX file:')
     print ('Take a look at log file?[y/n]')
     sel = raw_input()
     if sel.capitalize() == 'Y':
-      print (roottmp+'.log')
       print (root+'epslatexeps.log')
-      shutil.copy(roottmp+'.log',root+'epslatexeps.log')
+      sp.call(['cat',rootftmp+'.log'])
 
-    remove_tmp(roottmp)
+    shutil.rmtree(rootdtmp)
     exit(3)
-  output=sp.call(['dvips','-j0 -G0',roottmp+'.dvi','-o',roottmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
+  output=sp.call(['dvips','-j0 -G0',rootftmp+'.dvi','-o',rootftmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
   if output:
     print ('Error compiling *.dvi:')
     print ('Take a look at you file')
-    remove_tmp(roottmp)
+    shutil.rmtree(rootdtmp)
+    #remove_tmp(roottmp)
     exit(4)
   if args.pdf:
-    output=sp.call(['ps2pdf','-f',roottmp+'.ps',roottmp+'.pdf'],stderr=sp.STDOUT,stdout=sp.PIPE)
+    output=sp.call(['ps2pdf','-f',rootftmp+'.ps',rootftmp+'.pdf'],stderr=sp.STDOUT,stdout=sp.PIPE)
     if output:
       print ('Error compiling *.ps:')
       print ('Take a look at you file')
-      remove_tmp(roottmp)
+      #remove_tmp(roottmp)
+      shutil.rmtree(rootdtmp)
       exit(5)
   else:
-    output=sp.call(['ps2eps','-f',roottmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
+    output=sp.call(['ps2eps','-f',rootftmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
     if output:
       print ('Error compiling *.ps:')
       print ('Take a look at you file')
-      remove_tmp(roottmp)
+      #remove_tmp(roottmp)
+      shutil.rmtree(rootdtmp)
       exit(5)
 
 
   if args.o==None:
     if args.pdf:
-      shutil.move(roottmp+'.pdf',root+'.pdf')
+      shutil.move(rootftmp+'.pdf',root+'.pdf')
     else:
-      shutil.move(roottmp+'.eps',root+'.eps')
+      shutil.move(rootftmp+'.eps',root+'.eps')
   else:
     if args.pdf:
-      shutil.move(roottmp+'.pdf',args.o)
+      shutil.move(rootftmp+'.pdf',args.o)
     else:
-      shutil.move(roottmp+'.eps',args.o)
-
-  if args.remove:
-    remove_tmp(roottmp)
-
-def remove_tmp(roottmp):
-  ## Delete temporary files
-  remove_ext=['.tex','.dvi','.ps','.log','.aux']
-  for e in remove_ext:
-    if os.path.isfile(roottmp+e):
-      os.remove(roottmp+e)
-
+      shutil.move(rootftmp+'.eps',args.o)
+  
+  shutil.rmtree(rootdtmp)
 
 if __name__=='__main__':
   # parse arguments
