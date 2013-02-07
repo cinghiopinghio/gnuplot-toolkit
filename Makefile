@@ -1,5 +1,5 @@
-SHFILE=epslatex2eps
-PYFILE=epslatexeps
+SHFILE=epslatexeps
+PYFILE=epslatex2eps
 PATHDIR=~/.local/bin
 
 install:
