@@ -27,14 +27,6 @@ from its folder:
 It make a link to `~/.local/bin/`, so make sure it exists and it is in you
 `$PATH`!
 
-## bash script is DEPRECATED
-
-The bash script `epslatexeps.sh` is used to convert `epslatex` files prepared
-without the `standalone` parameter.
-The script is considered deprecated as its functionality as been merged in the
-python script.
-Soon enough it will be removed.
-
 ## Usage
 
 usage: `epslatex2eps [-h] [-f] [-s] [-p] [-o OUTFILE] FILE`
