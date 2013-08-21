@@ -50,42 +50,43 @@ def main(args=None):
     fin.writelines(buf)
     fin.flush()
     rootftmp = fin.name[:-4]
-    CLargs=['-interaction=nonstopmode','-output-directory='+rootdtmp,'-aux-directory='+rootdtmp]
-    output=sp.call(['latex']+CLargs+[rootftmp+'.tex'],stderr=sp.STDOUT,stdout=sp.PIPE)
-  if output: 
-    ## if errors on compile time:
-    print ('Error in LaTeX file:')
-    print ('Take a look at log file?[y/n]')
-    sel = raw_input()
-    if sel.capitalize() == 'Y':
-      print (root+'epslatexeps.log')
-      sp.call(['cat',rootftmp+'.log'])
-
-    shutil.rmtree(rootdtmp)
-    exit(3)
-## DVI to PS
-  output=sp.call(['dvips','-j0 -G0',rootftmp+'.dvi','-o',rootftmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
-  if output:
-    print ('Error compiling *.dvi:')
-    print ('Take a look at you file')
-    shutil.rmtree(rootdtmp)
-    exit(4)
+  CLargs=['-interaction=nonstopmode','-output-directory='+rootdtmp,'-aux-directory='+rootdtmp]
   if args.pdf:
 ## PS to PDF
-    output=sp.call(['ps2pdf','-f',rootftmp+'.ps',rootftmp+'.pdf'],stderr=sp.STDOUT,stdout=sp.PIPE)
+    output=sp.call(['pdflatex']+CLargs+[rootftmp+'.tex'],stderr=sp.STDOUT,stdout=sp.PIPE)
     if output:
-      print ('Error compiling *.ps:')
+      print ('Error compiling with pdflatex:')
       print ('Take a look at you file')
       shutil.rmtree(rootdtmp)
       exit(5)
   else:
-## PS to EPS
-    output=sp.call(['ps2eps','-f',rootftmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
+    output=sp.call(['latex']+CLargs+[rootftmp+'.tex'],stderr=sp.STDOUT,stdout=sp.PIPE)
+    if output: 
+      ## if errors on compile time:
+      print ('Error in LaTeX file:')
+      print ('Take a look at log file?[y/n]')
+      sel = raw_input()
+      if sel.capitalize() == 'Y':
+        print (root+'epslatexeps.log')
+        sp.call(['cat',rootftmp+'.log'])
+
+      shutil.rmtree(rootdtmp)
+      exit(3)
+## DVI to PS
+    output=sp.call(['dvips','-j0 -G0',rootftmp+'.dvi','-o',rootftmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
     if output:
-      print ('Error compiling *.ps:')
+      print ('Error compiling *.dvi:')
       print ('Take a look at you file')
       shutil.rmtree(rootdtmp)
-      exit(5)
+      exit(4)
+    else:
+## PS to EPS
+      output=sp.call(['ps2eps','-f',rootftmp+'.ps'],stderr=sp.STDOUT,stdout=sp.PIPE)
+      if output:
+        print ('Error compiling *.ps:')
+        print ('Take a look at you file')
+        shutil.rmtree(rootdtmp)
+        exit(5)
 
 #temporary outfile name (pdf of eps)
   tmpfile = rootftmp + '.pdf' if args.pdf else rootftmp + '.eps'
